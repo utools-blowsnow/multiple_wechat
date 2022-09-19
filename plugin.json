@@ -1,0 +1,24 @@
+{
+  "logo": "logo.png",
+  "preload": "preload.js",
+  "features": [
+    {
+      "platform": "win32",
+      "code": "wechat_start",
+      "explain": "多开N个微信，支持保存快捷确认登陆",
+      "cmds":["多开", "微信多开"]
+    },
+    {
+      "platform": "win32",
+      "code": "wechat_save",
+      "explain": "保存快捷确认登陆信息，下次可以直接快捷登陆",
+      "cmds":["多开确认","确认"]
+    },
+    {
+      "platform": "win32",
+      "code": "wechat_list",
+      "explain": "微信列表",
+      "cmds":["多开列表"]
+    }
+  ]
+}
