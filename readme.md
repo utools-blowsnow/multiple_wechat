@@ -7,3 +7,5 @@
 
 里面包含了个可执行的exe，介意的不要下载
 
+## 开源
+https://github.com/utools-blowsnow/multiple_wechat
