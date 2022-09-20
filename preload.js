@@ -7,8 +7,9 @@ let configPath = documents + "\\WeChat Files\\All Users\\config\\config.data";
 
 
 function startWx(wxid=0){
+
     // 重新登陆一个新的微信账号
-    fs.unlinkSync(configPath);
+    if (fs.existsSync(configPath)) fs.unlinkSync(configPath);
 
     if (wxid && fs.existsSync(documents + "\\WeChat Files\\All Users\\config\\"+wxid+".data")){
         fs.copyFileSync(documents + "\\WeChat Files\\All Users\\config\\"+wxid+".data",configPath);
@@ -17,8 +18,8 @@ function startWx(wxid=0){
     let exeData = window.utools.db.get("multiple_wechat");
     let exePath = null;
 
+
     if (!exeData || !fs.existsSync(exeData.data)){
-        // window.utools.showNotification("未设置多开程序路径，请下载文件后设置");
 
         let list = window.utools.showOpenDialog({
             title: "请选择多开程序路径",
@@ -26,11 +27,17 @@ function startWx(wxid=0){
             properties: ['openFile']
         })
 
-        if (list && list.length > 0){
-            exePath = list[0];
-        }else{
+        if (!list || list.length === 0){
             window.utools.copyText('https://github.com/utools-blowsnow/multiple_wechat/raw/master/multiple_wechat.exe')
-            window.utools.showNotification("设置失败，下载地址已复制到剪切板");
+            window.utools.showNotification("设置失败，多开程序下载地址已复制到剪切板");
+            return;
+        }
+
+        exePath = list[0];
+
+        if (exePath.indexOf("multiple_wechat.exe") === -1){
+            window.utools.copyText('https://github.com/utools-blowsnow/multiple_wechat/raw/master/multiple_wechat.exe')
+            window.utools.showNotification("请下载多开程序，下载地址已复制到剪切板");
             return;
         }
 
@@ -42,9 +49,9 @@ function startWx(wxid=0){
     }else{
         exePath =  exeData.data;
     }
+
     // 启动微信
     window.utools.shellOpenPath(exePath);
-
 
     setTimeout(() => {
         window.utools.showNotification("登陆成功后，不要忘记确认登陆哦！");
@@ -66,7 +73,7 @@ function loadWxData(){
 
     // 获取微信名称
     let fileObjs = fs.readdirSync(documents + "\\WeChat Files\\" + wxid);
-    let wxName = "未知名称："  + wxid;
+    let wxName = "获取名称失败："  + wxid;
     for (const fileObj of fileObjs) {
         if (fileObj.startsWith("account_")){
             wxName = fileObj.split("_")[1];
@@ -173,7 +180,11 @@ window.exports = {
             enter: (action) => {
                 window.utools.hideMainWindow()
 
-                startWx(0);
+                try {
+                    startWx(0);
+                }catch (e){
+                    window.utools.showNotification("错误" + e.message);
+                }
 
                 window.utools.outPlugin();
             }
