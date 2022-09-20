@@ -7,6 +7,9 @@ let configPath = documents + "\\WeChat Files\\All Users\\config\\config.data";
 
 
 function startWx(wxid=0){
+    // 重新登陆一个新的微信账号
+    fs.unlinkSync(configPath);
+
     if (wxid && fs.existsSync(documents + "\\WeChat Files\\All Users\\config\\"+wxid+".data")){
         fs.copyFileSync(documents + "\\WeChat Files\\All Users\\config\\"+wxid+".data",configPath);
     }
@@ -48,13 +51,13 @@ function loadWxData(){
     let matches = configText.match(/\\WeChat Files\\(.*?)\\config/);
     let wxid = matches[1];
     // 获取到wxid了
-    // window.utools.showNotification(wxid);
+
+
     // 获取账号名称
     let accInfoPath = documents + "\\WeChat Files\\" + wxid + "\\config\\AccInfo.dat";
     let accInfoText = fs.readFileSync(accInfoPath, 'utf8');
     let accInfoMatches = accInfoText.match(/http:\/\/wx.qlogo.cn[a-zA-Z0-9_/]+/);
     let wxPic = accInfoMatches[0];
-    // window.utools.showNotification(wxPic);
 
     // 获取微信名称
     let fileObjs = fs.readdirSync(documents + "\\WeChat Files\\" + wxid);
