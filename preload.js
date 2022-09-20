@@ -55,7 +55,7 @@ function startWx(wxid=0){
 
     setTimeout(() => {
         window.utools.showNotification("登陆成功后，不要忘记确认登陆哦！");
-    },60 * 1000)
+    },10 * 1000)
 }
 function loadWxData(){
     // \WeChat Files\All Users\config\config.data
