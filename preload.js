@@ -4,12 +4,43 @@ const path = require('path')
 
 let configPath = documents + "\\WeChat Files\\All Users\\config\\config.data";
 
+
+
 function startWx(wxid=0){
     if (wxid && fs.existsSync(documents + "\\WeChat Files\\All Users\\config\\"+wxid+".data")){
         fs.copyFileSync(documents + "\\WeChat Files\\All Users\\config\\"+wxid+".data",configPath);
     }
+
+    let exeData = window.utools.db.get("multiple_wechat");
+    let exePath = null;
+
+    if (!exeData || !fs.existsSync(exeData.data)){
+        // window.utools.showNotification("未设置多开程序路径，请下载文件后设置");
+
+        let list = window.utools.showOpenDialog({
+            title: "请选择多开程序路径",
+            filters: [{ 'name': 'multiple_wechat.exe', extensions: ['exe'] }],
+            properties: ['openFile']
+        })
+
+        if (list && list.length > 0){
+            exePath = list[0];
+        }else{
+            window.utools.copyText('https://github.com/utools-blowsnow/multiple_wechat/raw/master/multiple_wechat.exe')
+            window.utools.showNotification("设置失败，下载地址已复制到剪切板");
+            return;
+        }
+
+        window.utools.db.put({
+            _id: "multiple_wechat",
+            data: exePath
+        });
+
+    }else{
+        exePath =  exeData.data;
+    }
     // 启动微信
-    window.utools.shellOpenPath('./multiple_wechat.exe');
+    window.utools.shellOpenPath(exePath);
 }
 function loadWxData(){
     // \WeChat Files\All Users\config\config.data
@@ -27,7 +58,7 @@ function loadWxData(){
 
     // 获取微信名称
     let fileObjs = fs.readdirSync(documents + "\\WeChat Files\\" + wxid);
-    let wxName = "";
+    let wxName = "未知名称："  + wxid;
     for (const fileObj of fileObjs) {
         if (fileObj.startsWith("account_")){
             wxName = fileObj.split("_")[1];
@@ -75,7 +106,7 @@ window.exports = {
                     let data = JSON.parse(item.data);
                     list.push({
                         title: data.name,
-                        description: data.name,
+                        description: data.id,
                         icon: data.logo,
                         id: data.id
                     })
