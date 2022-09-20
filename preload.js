@@ -44,6 +44,11 @@ function startWx(wxid=0){
     }
     // 启动微信
     window.utools.shellOpenPath(exePath);
+
+
+    setTimeout(() => {
+        window.utools.showNotification("登陆成功后，不要忘记确认登陆哦！");
+    },60 * 1000)
 }
 function loadWxData(){
     // \WeChat Files\All Users\config\config.data
@@ -105,6 +110,13 @@ window.exports = {
                 // 获取记录的微信列表
                 let docs = window.utools.db.allDocs("wx_");
                 let list = [];
+                list.push({
+                    title: "多开一个微信",
+                    description: "多开一个微信,保存登陆信息",
+                    icon: "./logo.png",
+                    id: 0
+                })
+
                 for (let item of docs) {
                     let data = JSON.parse(item.data);
                     list.push({
@@ -123,6 +135,12 @@ window.exports = {
                 // 获取一些数据
                 let docs = window.utools.db.allDocs("wx_");
                 let list = [];
+                list.push({
+                    title: "多开一个微信",
+                    description: "多开一个微信,保存登陆信息",
+                    icon: "./logo.png",
+                    id: 0
+                })
                 for (let item of docs) {
                     let data = JSON.parse(item.data);
                     if (data.name.indexOf(searchWord) !== -1) {
