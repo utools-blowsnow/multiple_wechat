@@ -1,14 +1,57 @@
 const fs = require("fs");
-let documents = window.utools.getPath('documents');
 const path = require('path')
+const pr = require("child_process");
+const iconv = require("iconv-lite");
 
-let wechatFilePath = documents + "\\WeChat Files";
+// 尝试从数据库中获取记录的微信文档路径
+let wechatFilePath;
+let wechatFilePathData = window.utools.db.get("wechatFilePath");
+if (wechatFilePathData){
+    wechatFilePath = wechatFilePathData.data;
+}
+
 if (!fs.existsSync(wechatFilePath)){
-    let wechatFilePathData = window.utools.db.get("wechatFilePath");
-    if (wechatFilePathData){
-        wechatFilePath = wechatFilePathData.data;
+    // 尝试所以默认获取微信文档目录
+    let documents = window.utools.getPath('documents');
+    wechatFilePath = documents + "\\WeChat Files";
+
+    // 可能后续迁移了微信文档目录
+    if (!fs.existsSync(wechatFilePath)){
+        let pr = require('child_process');
+        let iconv = require('iconv-lite');
+
+        // 从注册表中获取微信文档路径
+        const CODE_PAGE = {
+            '936': 'gbk',
+            '65001': 'utf-8'
+        };
+        pr.exec('chcp', function (_err, _stdout, _stderr) {
+            if (_err) {
+                console.error(_err)
+                return;
+            }
+            const page = _stdout.replace(/[^0-9]/ig, "");
+            let _encoding = CODE_PAGE[page]
+
+            pr.exec("REG QUERY HKEY_CURRENT_USER\\Software\\Tencent\\WeChat /v Test",{ encoding: 'buffer'},function(error,stdout,stderr){
+                if (_err) {
+                    console.error(_err)
+                    return;
+                }
+                let data;
+                if (_encoding === 'uft8'){
+                    data = stdout.toString()
+                }else{
+                    data = iconv.decode(stdout, "gbk").toString()
+                }
+                let matches = data.match(/[a-zA-Z]*?:.*/)
+                if (matches) wechatFilePath = matches[0];
+            });
+        })
     }
 }
+
+
 
 function configPath(){
     return wechatFilePath + "\\All Users\\config\\config.data";
@@ -27,16 +70,16 @@ function getExePath(){
         })
 
         if (!list || list.length === 0){
-            window.utools.copyText('https://github.com/utools-blowsnow/multiple_wechat/raw/master/multiple_wechat.exe')
-            window.utools.showNotification("设置失败，多开程序下载地址已复制到剪切板");
+            utools.shellOpenExternal('https://github.com/utools-blowsnow/multiple_wechat/raw/master/multiple_wechat.exe')
+            window.utools.showNotification("请下载多开程序后，使用程序设置多开程序路径");
             return false;
         }
 
         exePath = list[0];
 
         if (exePath.indexOf("multiple_wechat.exe") === -1){
-            window.utools.copyText('https://github.com/utools-blowsnow/multiple_wechat/raw/master/multiple_wechat.exe')
-            window.utools.showNotification("请下载多开程序，下载地址已复制到剪切板");
+            utools.shellOpenExternal('https://github.com/utools-blowsnow/multiple_wechat/raw/master/multiple_wechat.exe')
+            window.utools.showNotification("请下载多开程序后，使用程序设置多开程序路径");
             return false;
         }
 
@@ -256,5 +299,50 @@ window.exports = {
                 window.utools.outPlugin();
             }
         }
-    }
+    },
+    "wechat_file_path": {
+        mode: "none",
+        args: {
+            // 进入插件应用时调用
+            enter: ({ code, type, payload }) => {
+                window.utools.hideMainWindow()
+
+                if (payload.length > 0){
+                    window.utools.db.put({
+                        _id: "wechatFilePath",
+                        data: payload[0].path
+                    })
+
+                    window.utools.showNotification("保存成功：" + payload[0].path);
+                }else{
+                    window.utools.showNotification("保存失败");
+                }
+
+                window.utools.outPlugin();
+            }
+        }
+    },
+    "wechat_multiple_exe": {
+        mode: "none",
+        args: {
+            // 进入插件应用时调用
+            enter: ({ code, type, payload }) => {
+                window.utools.hideMainWindow()
+
+                if (payload.length > 0){
+                    window.utools.db.put({
+                        _id: "multiple_wechat",
+                        data: payload[0].path
+                    })
+
+                    window.utools.showNotification("保存成功：" + payload[0].path);
+                }else{
+                    window.utools.showNotification("保存失败");
+                }
+
+                window.utools.outPlugin();
+            }
+        }
+    },
+
 }

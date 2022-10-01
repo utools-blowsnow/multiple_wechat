@@ -17,6 +17,33 @@
       "code": "wechat_list",
       "explain": "多开微信列表",
       "cmds":["多开列表","多开","微信多开","多开微信"]
+    },
+    {
+      "code": "wechat_file_path",
+      "explain": "设置微信文档目录",
+      "cmds": [
+        {
+          "type": "files",
+          "label": "设置微信文档目录",
+          "fileType": "directory",
+          "minLength": 1,
+          "maxLength": 1
+        }
+      ]
+    },
+    {
+      "code": "wechat_multiple_exe",
+      "explain": "设置微信双开软件",
+      "cmds": [
+        {
+          "type": "files",
+          "label": "设置微信双开软件",
+          "fileType": "file",
+          "match": "/multiple_wechat\\.exe/",
+          "minLength": 1,
+          "maxLength": 1
+        }
+      ]
     }
   ]
 }
