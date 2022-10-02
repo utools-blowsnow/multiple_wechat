@@ -7,6 +7,7 @@
     "win32"
   ],
   "dependencies": {
-    "iconv-lite": "^0.6.3"
+    "iconv-lite": "^0.6.3",
+    "simple-node-logger": "^21.8.12"
   }
 }
