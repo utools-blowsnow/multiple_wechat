@@ -70,7 +70,7 @@ function getExePath(){
         })
 
         if (!list || list.length === 0){
-            utools.shellOpenExternal('https://github.com/utools-blowsnow/multiple_wechat/raw/master/multiple_wechat.exe')
+            utools.shellOpenExternal('https://github.com/utools-blowsnow/multiple_wechat/releases/tag/multiple_wechat.exe')
             window.utools.showNotification("请下载多开程序后，使用程序设置多开程序路径");
             return false;
         }
@@ -78,7 +78,7 @@ function getExePath(){
         exePath = list[0];
 
         if (exePath.indexOf("multiple_wechat.exe") === -1){
-            utools.shellOpenExternal('https://github.com/utools-blowsnow/multiple_wechat/raw/master/multiple_wechat.exe')
+            utools.shellOpenExternal('https://github.com/utools-blowsnow/multiple_wechat/releases/tag/multiple_wechat.exe')
             window.utools.showNotification("请下载多开程序后，使用程序设置多开程序路径");
             return false;
         }
