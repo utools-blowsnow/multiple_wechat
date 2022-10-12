@@ -6,8 +6,15 @@
   "platform": [
     "win32"
   ],
+  "scripts": {
+    "build": "node build.js"
+  },
   "dependencies": {
-    "iconv-lite": "^0.6.3",
-    "simple-node-logger": "^21.8.12"
+    "axios": "^0.27.2",
+    "iconv-lite": "^0.6.2"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.34.0",
+    "utools-api-types": "^3.0.0"
   }
 }

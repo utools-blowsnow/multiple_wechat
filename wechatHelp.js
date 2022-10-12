@@ -1,5 +1,4 @@
 const fs = require("fs");
-const path = require('path')
 const pr = require("child_process");
 const iconv = require("iconv-lite");
 

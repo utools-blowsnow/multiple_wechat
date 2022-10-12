@@ -1,11 +1,6 @@
-let logPath = window.utools.getPath('logs');
-
-window.logger = require('simple-node-logger').createSimpleFileLogger(logPath + '\\log.txt');
-
 require('./utoolsHelp')
 
-const wechatHelp = require( './wechatHelp');
-
+let wechatHelp = require( './wechatHelp');
 
 window.exports = {
     "wechat_list": { // 注意：键对应的是 plugin.json 中的 features.code
@@ -63,11 +58,11 @@ window.exports = {
                 callbackSetList(list)
             },
             // 用户选择列表中某个条目时被调用
-            select: (action, itemData, callbackSetList) => {
+            select: async (action, itemData, callbackSetList) => {
                 window.utools.hideMainWindow()
                 try {
-                    wechatHelp.startWx(itemData.id);
-                }catch (e){
+                    await wechatHelp.startWx(itemData.id);
+                } catch (e) {
                     window.utools.showNotification("启动失败：" + e.message);
                 }
                 window.utools.outPlugin()
@@ -80,12 +75,12 @@ window.exports = {
         mode: "none",
         args: {
             // 进入插件应用时调用
-            enter: (action) => {
+            enter: async (action) => {
                 window.utools.hideMainWindow()
 
                 try {
-                    wechatHelp.startWx(0);
-                }catch (e){
+                    await wechatHelp.startWx(0);
+                } catch (e) {
                     window.utools.showNotification("启动失败：" + e.message);
                 }
 

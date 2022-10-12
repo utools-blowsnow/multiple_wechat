@@ -1,3 +1,4 @@
+
 window.db = function (name, value = undefined) {
     let obj = utools.db.get(name);
 
@@ -16,3 +17,5 @@ window.db = function (name, value = undefined) {
     if (obj == null) return null;
     return obj.data;
 }
+
+window.logger = require('./logger').createLogger('d:\\log.log');
