@@ -1,6 +1,6 @@
-require('./utoolsHelp')
+require('./lib/utoolsHelp')
 
-let wechatHelp = require( './wechatHelp');
+let wechatHelp = require( './lib/wechatHelp');
 
 window.exports = {
     "wechat_list": { // 注意：键对应的是 plugin.json 中的 features.code
@@ -13,7 +13,7 @@ window.exports = {
                 let list = [];
                 list.push({
                     title: "多开一个微信",
-                    description: "多开一个微信,保存登陆信息",
+                    description: "多开一个微信,登陆后记得回来输入“确认登陆”保存登陆信息",
                     icon: "./logo.png",
                     id: 0
                 })
@@ -38,7 +38,7 @@ window.exports = {
                 let list = [];
                 list.push({
                     title: "多开一个微信",
-                    description: "多开一个微信,保存登陆信息",
+                    description: "多开一个微信,登陆后记得回来输入“确认登陆”保存登陆信息",
                     icon: "./logo.png",
                     id: 0
                 })
@@ -92,12 +92,12 @@ window.exports = {
         mode: "none",
         args: {
             // 进入插件应用时调用
-            enter: (action) => {
+            enter: async (action) => {
                 window.utools.hideMainWindow()
                 try {
-                    let data = wechatHelp.saveWxData();
+                    let data = await wechatHelp.saveWxData();
                     window.utools.showNotification("保存微信账号成功：" + data.name);
-                }catch (e){
+                } catch (e) {
                     logger.error(e)
                     window.utools.showNotification("保存失败：" + e.message);
                 }
