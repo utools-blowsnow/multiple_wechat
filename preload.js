@@ -117,6 +117,8 @@ window.exports = {
 
                     window.db("wechatFilePath", payload[0].path);
 
+                    wechatHelp.reloadWechatFilePath();
+
                     window.utools.showNotification("保存成功：" + payload[0].path);
                 }else{
                     window.utools.showNotification("保存失败");
