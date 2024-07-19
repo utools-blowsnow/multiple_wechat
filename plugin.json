@@ -33,17 +33,22 @@
     },
     {
       "code": "wechat_multiple_exe",
-      "explain": "设置微信双开软件",
+      "explain": "手动设置微信多开软件",
       "cmds": [
         {
           "type": "files",
-          "label": "设置微信双开软件",
+          "label": "设置微信多开软件",
           "fileType": "file",
           "match": "/multiple_wechat\\.exe/",
           "minLength": 1,
           "maxLength": 1
         }
       ]
+    },
+    {
+      "code": "download_wechat_multiple_exe",
+      "explain": "下载微信多开开软件，调用则视为同意相关风险",
+      "cmds":["下载微信多开开软件"]
     }
   ]
 }
