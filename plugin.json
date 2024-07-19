@@ -11,12 +11,17 @@
     {
       "code": "wechat_save",
       "explain": "保存快捷确认登陆信息，下次可以直接快捷登陆",
-      "cmds":["多开确认","确认","确认登陆"]
+      "cmds":["多开确认","确认登陆"]
     },
     {
       "code": "wechat_list",
       "explain": "多开微信列表",
-      "cmds":["多开列表","多开","微信多开","多开微信"]
+      "cmds":["多开列表","微信多开","多开微信"]
+    },
+    {
+      "code": "wechat_delete_list",
+      "explain": "删除多开微信列表",
+      "cmds":["删除多开微信列表"]
     },
     {
       "code": "wechat_file_path",
