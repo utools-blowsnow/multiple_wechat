@@ -115,7 +115,7 @@ window.exports = {
 
                 if (payload.length > 0){
 
-                    window.dbDevice("wechatFilePath", payload[0].path);
+                    window.dbDevice.setItem("wechatFilePath", payload[0].path);
 
                     wechatHelp.reloadWechatFilePath();
 
@@ -136,7 +136,7 @@ window.exports = {
                 window.utools.hideMainWindow()
 
                 if (payload.length > 0){
-                    window.dbDevice("multiple_wechat", payload[0].path);
+                    window.dbDevice.setItem("multiple_wechat", payload[0].path);
 
                     window.utools.showNotification("保存成功：" + payload[0].path);
                 }else{
@@ -151,10 +151,14 @@ window.exports = {
         mode: "none",
         args: {
             // 进入插件应用时调用
-            enter: ({ code, type, payload }) => {
+            enter: async ({code, type, payload}) => {
                 window.utools.hideMainWindow()
 
-                wechatHelp.downloadMultipleWechat();
+                try {
+                    await wechatHelp.downloadWechatMultipleExe();
+                } catch (e) {
+                    window.utools.showNotification("下载失败：" + e.message);
+                }
 
                 window.utools.outPlugin();
             }
