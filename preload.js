@@ -10,6 +10,7 @@ window.exports = {
             enter: (action, callbackSetList) => {
                 // 获取记录的微信列表
                 let docs = window.utools.db.allDocs("wx_");
+
                 let list = [];
                 list.push({
                     title: "多开一个微信",
@@ -19,7 +20,10 @@ window.exports = {
                 })
 
                 for (let item of docs) {
-                    let data = JSON.parse(item.data);
+                    if (!item._id.includes(utools.getNativeId())){
+                        continue
+                    }
+                    let data = JSON.parse(item.value);
                     list.push({
                         title: data.name,
                         description: data.id,
@@ -27,7 +31,6 @@ window.exports = {
                         id: data.id
                     })
                 }
-
                 // 如果进入插件应用就要显示列表数据
                 callbackSetList(list)
             },
@@ -43,7 +46,10 @@ window.exports = {
                     id: 0
                 })
                 for (let item of docs) {
-                    let data = JSON.parse(item.data);
+                    if (!item._id.includes(utools.getNativeId())){
+                        continue
+                    }
+                    let data = JSON.parse(item.value);
                     if (data.name.indexOf(searchWord) !== -1) {
                         list.push({
                             title: data.name,
