@@ -7,7 +7,14 @@ window.exports = {
         mode: "list",  // 列表模式
         args: {
             // 进入插件应用时调用（可选）
-            enter: (action, callbackSetList) => {
+            enter: async (action, callbackSetList) => {
+                if (!await wechatHelp.existMultipleExe()){
+                    logger.log("多开软件不存在，跳转多开列表")
+                    utools.redirect('确认下载微信多开开软件')
+                    window.utools.outPlugin();
+                    return
+                }
+
                 // 获取记录的微信列表
                 let docs = window.utools.db.allDocs("wx_");
 
@@ -20,7 +27,7 @@ window.exports = {
                 })
 
                 for (let item of docs) {
-                    if (!item._id.includes(utools.getNativeId())){
+                    if (!item._id.includes(utools.getNativeId())) {
                         continue
                     }
                     let data = JSON.parse(item.value);
@@ -69,6 +76,7 @@ window.exports = {
                 try {
                     await wechatHelp.startWx(itemData.id);
                 } catch (e) {
+                    logger.error("启动微信失败",e)
                     window.utools.showNotification("启动失败：" + e.message);
                 }
                 window.utools.outPlugin()
@@ -145,11 +153,20 @@ window.exports = {
         args: {
             // 进入插件应用时调用
             enter: async (action) => {
+                logger.log("启动微信start")
                 window.utools.hideMainWindow()
-
+                if (!await wechatHelp.existMultipleExe()){
+                    logger.log("多开软件不存在，跳转多开列表")
+                    window.utools.showNotification("多开软件不存在，请先同意下载多开软件");
+                    utools.redirect('确认下载微信多开开软件')
+                    window.utools.outPlugin();
+                    return
+                }
+                logger.log("快开启动微信多开")
                 try {
                     await wechatHelp.startWx(0);
                 } catch (e) {
+                    logger.error("快开启动失败" , e)
                     window.utools.showNotification("启动失败：" + e.message);
                 }
 
@@ -167,7 +184,7 @@ window.exports = {
                     let data = await wechatHelp.saveWxData();
                     window.utools.showNotification("保存微信账号成功：" + data.name);
                 } catch (e) {
-                    logger.error(e)
+                    logger.error("保存微信账号失败",e)
                     window.utools.showNotification("保存失败：" + e.message);
                 }
 
@@ -231,6 +248,35 @@ window.exports = {
 
                 window.utools.outPlugin();
             }
+        }
+    },
+    "download_wechat_multiple_exe_confirm": { // 注意：键对应的是 plugin.json 中的 features.code
+        mode: "list",  // 列表模式
+        args: {
+            // 进入插件应用时调用（可选）
+            enter: async (action, callbackSetList) => {
+                let list = [];
+                list.push({
+                    title: "确认下载微信多开软件",
+                    description: "回车即确认同意从互联网下载多开软件用于执行多开微信",
+                    icon: "./logo.png",
+                    id: 0
+                })
+                // 如果进入插件应用就要显示列表数据
+                callbackSetList(list)
+            },
+            // 用户选择列表中某个条目时被调用
+            select: async (action, itemData, callbackSetList) => {
+                window.utools.hideMainWindow()
+
+                try {
+                    await wechatHelp.downloadWechatMultipleExe();
+                } catch (e) {
+                    window.utools.showNotification("下载失败：" + e.message);
+                }
+
+                window.utools.outPlugin();
+            },
         }
     },
 }

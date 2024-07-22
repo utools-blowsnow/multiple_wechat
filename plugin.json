@@ -54,6 +54,11 @@
       "code": "download_wechat_multiple_exe",
       "explain": "下载微信多开开软件，调用则视为同意相关风险",
       "cmds":["下载微信多开开软件"]
+    },
+    {
+      "code": "download_wechat_multiple_exe_confirm",
+      "explain": "下载微信多开开软件，调用则视为同意相关风险",
+      "cmds":["确认下载微信多开开软件"]
     }
   ]
 }
