@@ -10,8 +10,8 @@ window.exports = {
             enter: async (action, callbackSetList) => {
                 if (!await wechatHelp.existMultipleExe()){
                     logger.log("多开软件不存在，跳转多开列表")
+                    window.utools.showNotification("多开软件不存在，请先同意下载多开软件");
                     utools.redirect('确认下载微信多开开软件')
-                    window.utools.outPlugin();
                     return
                 }
 
@@ -159,7 +159,6 @@ window.exports = {
                     logger.log("多开软件不存在，跳转多开列表")
                     window.utools.showNotification("多开软件不存在，请先同意下载多开软件");
                     utools.redirect('确认下载微信多开开软件')
-                    window.utools.outPlugin();
                     return
                 }
                 logger.log("快开启动微信多开")
