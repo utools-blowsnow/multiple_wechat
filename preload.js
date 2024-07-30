@@ -8,7 +8,7 @@ async function buildWechatList() {
     let list = [];
     for (let data of localWechatList) {
         list.push({
-            title: data.name,
+            title: data.name  + (data.isLogin ? ' - [在线]': ''),
             description: data.id,
             icon: data.logo,
             id: data.id,
@@ -217,7 +217,12 @@ window.exports = {
 
                 if (payload.length > 0){
 
-                    wechatHelp.saveWechatFilePath(payload[0].path);
+                    try {
+                        wechatHelp.saveWechatFilePath(payload[0].path);
+                    }catch (e){
+                        window.utools.showNotification("保存失败：" + e.message);
+                        return
+                    }
 
                     window.utools.showNotification("保存成功：" + payload[0].path);
                 }else{
