@@ -9,11 +9,6 @@
       "cmds":["快开"]
     },
     {
-      "code": "wechat_save",
-      "explain": "保存快捷确认登陆信息，下次可以直接快捷登陆",
-      "cmds":["多开确认","确认登陆"]
-    },
-    {
       "code": "wechat_list",
       "explain": "多开微信列表",
       "cmds":["多开列表","微信多开","多开微信"]
@@ -22,6 +17,11 @@
       "code": "wechat_delete_list",
       "explain": "删除多开微信列表",
       "cmds":["删除多开微信列表"]
+    },
+    {
+      "code": "config",
+      "explain": "多开配置",
+      "cmds":["多开配置"]
     },
     {
       "code": "wechat_file_path",
@@ -49,16 +49,6 @@
           "maxLength": 1
         }
       ]
-    },
-    {
-      "code": "download_wechat_multiple_exe",
-      "explain": "下载微信多开开软件，调用则视为同意相关风险",
-      "cmds":["下载微信多开开软件"]
-    },
-    {
-      "code": "download_wechat_multiple_exe_confirm",
-      "explain": "下载微信多开开软件，调用则视为同意相关风险",
-      "cmds":["确认下载微信多开开软件"]
     }
   ]
 }
