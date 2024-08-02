@@ -56,6 +56,7 @@ window.exports = {
                 window.utools.hideMainWindow()
 
                 try {
+                    if (itemData.id === 0) itemData = null
                     await wechatHelp.startWx(itemData);
 
                 } catch (e) {
