@@ -24,6 +24,11 @@
       "cmds":["多开配置"]
     },
     {
+      "code": "wechat_save",
+      "explain": "保存快捷确认登陆信息，下次可以直接快捷登陆",
+      "cmds":["多开确认","确认登陆"]
+    },
+    {
       "code": "wechat_file_path",
       "explain": "设置微信文档目录",
       "cmds": [
