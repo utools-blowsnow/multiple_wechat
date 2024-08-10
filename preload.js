@@ -24,7 +24,17 @@ window.exports = {
         args: {
             // 进入插件应用时调用（可选）
             enter: async (action, callbackSetList) => {
-                let list = await buildWechatList();
+                let list = []
+                try{
+                    list = await buildWechatList();
+                }catch (e) {
+                    logger.error("获取列表失败",e)
+                    window.utools.showNotification("获取列表失败：" + e.message);
+                    if (e instanceof GoConfigError){
+                        window.utools.redirect('多开配置')
+                    }
+                    return
+                }
                 list.unshift({
                     title: "多开一个微信",
                     description: "多开一个微信,登陆后记得回来输入“确认登陆”保存登陆信息",
@@ -79,7 +89,17 @@ window.exports = {
         args: {
             // 进入插件应用时调用（可选）
             enter: async (action, callbackSetList) => {
-                let list = await buildWechatList();
+                let list = []
+                try{
+                    list = await buildWechatList();
+                }catch (e) {
+                    logger.error("获取列表失败",e)
+                    window.utools.showNotification("获取列表失败：" + e.message);
+                    if (e instanceof GoConfigError){
+                        window.utools.redirect('多开配置')
+                    }
+                    return
+                }
                 // 如果进入插件应用就要显示列表数据
                 callbackSetList(list)
             },
