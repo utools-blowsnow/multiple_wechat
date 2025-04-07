@@ -1,7 +1,7 @@
 require( './lib/utoolsHelp');
 
 let {wechatHelp, GoConfigError} = require( './lib/wechatHelp');
-const {downloadHandle} = require("./lib/kill");
+const {downloadHandle, HANDLE_EXE_PATH} = require("./lib/kill");
 
 async function buildWechatList() {
     // 获取记录的微信列表
@@ -209,14 +209,20 @@ window.exports = {
             enter: async (action, callbackSetList) => {
                 let list = [];
                 list.push({
-                    title: "下载进程处理(Handle)软件",
-                    description: "回车即确认同意从互联网下载进程处理软件用于执行多开微信",
+                    title: "使用须知",
+                    description: "当前只支持4.0+微信版本，低版本请使用旧版N开插件",
+                    icon: "./logo.png",
+                    id: -1
+                })
+                list.push({
+                    title: "第一步. 下载微软进程处理(handle.exe)软件",
+                    description: "点击即确认同意从互联网下载微软进程处理软件用于执行多开微信",
                     icon: "./logo.png",
                     id: 0
                 })
                 list.push({
-                    title: "设置微信文档路径",
-                    description: "请粘贴微信文档路径到Utools输入框",
+                    title: "第二步. 设置微信文档路径",
+                    description: "获取方法：微信-设置-存储位置，跳到存储位置，复制文件夹然后粘贴当前路径到Utools输入框",
                     icon: "./logo.png",
                     id: 1
                 })
@@ -230,11 +236,12 @@ window.exports = {
                 if (itemData.id === 0){
                     try {
                         await downloadHandle();
+                        utools.showNotification("下载成功: " + HANDLE_EXE_PATH);
                     } catch (e) {
                         utools.showNotification("下载失败：" + e.message);
                     }
                 }else if (itemData.id === 1){
-                    utools.showNotification("请粘贴微信文档路径到Utools输入框");
+                    utools.showNotification("获取方法：微信-设置-存储位置，跳到存储位置，复制文件夹然后粘贴当前路径到Utools输入框");
                 }
 
                 utools.outPlugin();
