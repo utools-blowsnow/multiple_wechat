@@ -1,6 +1,7 @@
-require('./lib/utoolsHelp')
+require( './lib/utoolsHelp');
 
 let {wechatHelp, GoConfigError} = require( './lib/wechatHelp');
+const {downloadHandle} = require("./lib/kill");
 
 async function buildWechatList() {
     // 获取记录的微信列表
@@ -29,15 +30,21 @@ window.exports = {
                     list = await buildWechatList();
                 }catch (e) {
                     logger.error("获取列表失败",e)
-                    window.utools.showNotification("获取列表失败：" + e.message);
+                    utools.showNotification("获取列表失败：" + e.message);
                     if (e instanceof GoConfigError){
-                        window.utools.redirect('多开配置')
+                        utools.redirect('多开配置')
                     }
                     return
                 }
                 list.unshift({
                     title: "多开一个微信",
                     description: "多开一个微信,登陆后记得回来输入“确认登陆”保存登陆信息",
+                    icon: "./logo.png",
+                    id: 0
+                })
+                list.push({
+                    title: "广告",
+                    description: "好用的话，请帮忙点个赞/赞助支持一下，谢谢！！！",
                     icon: "./logo.png",
                     id: 0
                 })
@@ -63,7 +70,7 @@ window.exports = {
             },
             // 用户选择列表中某个条目时被调用
             select: async (action, itemData, callbackSetList) => {
-                window.utools.hideMainWindow()
+                utools.hideMainWindow()
 
                 try {
                     if (itemData.id === 0) itemData = null
@@ -71,14 +78,14 @@ window.exports = {
 
                 } catch (e) {
                     logger.error("启动微信失败",e)
-                    window.utools.showNotification("启动失败：" + e.message);
+                    utools.showNotification("启动失败：" + e.message);
                     if (e instanceof GoConfigError){
-                        window.utools.redirect('多开配置')
+                        utools.redirect('多开配置')
                     }
                     return
                 }
 
-                window.utools.outPlugin()
+                utools.outPlugin()
             },
             // 子输入框为空时的占位符，默认为字符串"搜索"
             placeholder: "搜索"
@@ -94,9 +101,9 @@ window.exports = {
                     list = await buildWechatList();
                 }catch (e) {
                     logger.error("获取列表失败",e)
-                    window.utools.showNotification("获取列表失败：" + e.message);
+                    utools.showNotification("获取列表失败：" + e.message);
                     if (e instanceof GoConfigError){
-                        window.utools.redirect('多开配置')
+                        utools.redirect('多开配置')
                     }
                     return
                 }
@@ -114,13 +121,13 @@ window.exports = {
             },
             // 用户选择列表中某个条目时被调用
             select: async (action, itemData, callbackSetList) => {
-                window.utools.hideMainWindow()
+                utools.hideMainWindow()
                 try {
                     wechatHelp.deleteWechat(itemData)
                 } catch (e) {
-                    window.utools.showNotification("删除失败：" + e.message);
+                    utools.showNotification("删除失败：" + e.message);
                 }
-                window.utools.outPlugin()
+                utools.outPlugin()
             },
             // 子输入框为空时的占位符，默认为字符串"搜索"
             placeholder: "搜索"
@@ -131,21 +138,21 @@ window.exports = {
         args: {
             // 进入插件应用时调用
             enter: async (action) => {
-                window.utools.hideMainWindow()
+                utools.hideMainWindow()
 
                 logger.log("快开启动微信多开")
                 try {
                     await wechatHelp.startWx(null);
                 } catch (e) {
                     logger.error("快开启动失败" , typeof e,e)
-                    window.utools.showNotification("启动失败：" + e.message);
+                    utools.showNotification("启动失败：" + e.message);
                     if (e instanceof GoConfigError){
-                        utools.redirect('多开配置')
+                        window.utools.redirect('多开配置')
                     }
                     return
                 }
 
-                window.utools.outPlugin();
+                utools.outPlugin();
             }
         }
     },
@@ -154,19 +161,44 @@ window.exports = {
         args: {
             // 进入插件应用时调用
             enter: async (action) => {
-                window.utools.hideMainWindow()
+                utools.hideMainWindow()
                 try {
                     let data = await wechatHelp.saveWxData();
-                    window.utools.showNotification("保存微信账号成功：" + data.name);
+                    utools.showNotification("保存微信账号成功：" + data.name);
                 } catch (e) {
                     logger.error("保存微信账号失败",e)
-                    window.utools.showNotification("保存失败：" + e.message);
+                    utools.showNotification("保存失败：" + e.message);
                     if (e instanceof GoConfigError){
-                        window.utools.redirect('多开配置')
+                        utools.redirect('多开配置')
                     }
                 }
 
-                window.utools.outPlugin();
+                utools.outPlugin();
+            }
+        }
+    },
+    "wechat_file_path": {
+        mode: "none",
+        args: {
+            // 进入插件应用时调用
+            enter: ({ code, type, payload }) => {
+                utools.hideMainWindow()
+
+                if (payload.length > 0){
+
+                    try {
+                        wechatHelp.saveWechatFilePath(payload[0].path);
+                    }catch (e){
+                        utools.showNotification("保存失败：" + e.message);
+                        return
+                    }
+
+                    utools.showNotification("保存成功：" + payload[0].path);
+                }else{
+                    utools.showNotification("保存失败");
+                }
+
+                utools.outPlugin();
             }
         }
     },
@@ -177,8 +209,8 @@ window.exports = {
             enter: async (action, callbackSetList) => {
                 let list = [];
                 list.push({
-                    title: "下载微信多开软件",
-                    description: "回车即确认同意从互联网下载多开软件用于执行多开微信",
+                    title: "下载进程处理(Handle)软件",
+                    description: "回车即确认同意从互联网下载进程处理软件用于执行多开微信",
                     icon: "./logo.png",
                     id: 0
                 })
@@ -193,65 +225,20 @@ window.exports = {
             },
             // 用户选择列表中某个条目时被调用
             select: async (action, itemData, callbackSetList) => {
-                window.utools.hideMainWindow()
+                utools.hideMainWindow()
 
                 if (itemData.id === 0){
                     try {
-                        await wechatHelp.downloadWechatMultipleExe();
+                        await downloadHandle();
                     } catch (e) {
-                        window.utools.showNotification("下载失败：" + e.message);
+                        utools.showNotification("下载失败：" + e.message);
                     }
                 }else if (itemData.id === 1){
-                    window.utools.showNotification("请粘贴微信文档路径到Utools输入框");
+                    utools.showNotification("请粘贴微信文档路径到Utools输入框");
                 }
 
-                window.utools.outPlugin();
+                utools.outPlugin();
             },
-        }
-    },
-
-    "wechat_multiple_exe": {
-        mode: "none",
-        args: {
-            // 进入插件应用时调用
-            enter: ({ code, type, payload }) => {
-                window.utools.hideMainWindow()
-
-                if (payload.length > 0){
-                    window.dbDevice.setItem("multiple_wechat", payload[0].path);
-
-                    window.utools.showNotification("保存成功：" + payload[0].path);
-                }else{
-                    window.utools.showNotification("保存失败");
-                }
-
-                window.utools.outPlugin();
-            }
-        }
-    },
-    "wechat_file_path": {
-        mode: "none",
-        args: {
-            // 进入插件应用时调用
-            enter: ({ code, type, payload }) => {
-                window.utools.hideMainWindow()
-
-                if (payload.length > 0){
-
-                    try {
-                        wechatHelp.saveWechatFilePath(payload[0].path);
-                    }catch (e){
-                        window.utools.showNotification("保存失败：" + e.message);
-                        return
-                    }
-
-                    window.utools.showNotification("保存成功：" + payload[0].path);
-                }else{
-                    window.utools.showNotification("保存失败");
-                }
-
-                window.utools.outPlugin();
-            }
         }
     },
 }

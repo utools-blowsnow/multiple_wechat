@@ -19,11 +19,6 @@
       "cmds":["删除多开微信列表"]
     },
     {
-      "code": "config",
-      "explain": "多开配置",
-      "cmds":["多开配置"]
-    },
-    {
       "code": "wechat_save",
       "explain": "保存快捷确认登陆信息，下次可以直接快捷登陆",
       "cmds":["多开确认","确认登陆"]
@@ -42,18 +37,9 @@
       ]
     },
     {
-      "code": "wechat_multiple_exe",
-      "explain": "手动设置微信多开软件",
-      "cmds": [
-        {
-          "type": "files",
-          "label": "设置微信多开软件",
-          "fileType": "file",
-          "match": "/multiple_wechat\\.exe/",
-          "minLength": 1,
-          "maxLength": 1
-        }
-      ]
+      "code": "config",
+      "explain": "多开配置",
+      "cmds":["多开配置"]
     }
   ]
 }
