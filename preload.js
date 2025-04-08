@@ -43,9 +43,9 @@ window.exports = {
                     icon: "./logo.png",
                     id: 0
                 })
-                list.push({
+                list.unshift({
                     title: "广告",
-                    description: "好用的话，请帮忙点个赞/赞助支持一下，谢谢！！！",
+                    description: "如果好用的话，麻烦帮忙点赞，或者赞助支持一下！！！",
                     icon: "./logo.png",
                     id: 0
                 })
@@ -214,6 +214,12 @@ window.exports = {
                     description: "当前只支持4.0+微信版本，低版本请使用旧版N开插件",
                     icon: "./logo.png",
                     id: -1
+                })
+                list.push({
+                    title: "广告",
+                    description: "如果好用的话，麻烦帮忙点赞，或者赞助支持一下！！！",
+                    icon: "./logo.png",
+                    id: -2
                 })
                 list.push({
                     title: "第一步. 下载微软进程处理(handle.exe)软件",
