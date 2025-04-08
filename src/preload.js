@@ -50,6 +50,8 @@ window.exports = {
                     id: 0
                 })
 
+                logger.info("list", list)
+
                 // 如果进入插件应用就要显示列表数据
                 callbackSetList(list)
             },
@@ -58,13 +60,20 @@ window.exports = {
 
                 let list = await buildWechatList();
 
-                list = list.filter(item => item.name.includes(searchWord))
+                list = list.filter(item => item.title.includes(searchWord))
                 list.unshift({
                     title: "多开一个微信",
                     description: "多开一个微信,登陆后记得回来输入“确认登陆”保存登陆信息",
                     icon: "./logo.png",
                     id: 0
                 })
+                list.unshift({
+                    title: "广告",
+                    description: "如果好用的话，麻烦帮忙点赞，或者赞助支持一下！！！",
+                    icon: "./logo.png",
+                    id: 0
+                })
+
 
                 // 执行 callbackSetList 显示出来
                 callbackSetList(list)

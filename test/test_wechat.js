@@ -1,9 +1,9 @@
 const path = require("node:path");
 const fs = require("node:fs");
-const {findLatestFile, findLatestFileAll} = require("../lib/file");
+const {findLatestFile, findLatestFileAll} = require("../src/lib/file");
 const pr = require("child_process");
 const iconv = require("iconv-lite");
-const {wechatHelp} = require("../lib/wechatHelp");
+const {wechatHelp} = require("../src/lib/wechatHelp");
 
 
 let wechatFilePath = "E:\\windowsInfo\\Documents\\xwechat_files";

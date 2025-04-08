@@ -21,7 +21,7 @@ window.dbDevice = {
 }
 
 if (utools.isDev()) {
-    window.logger = require('./logger').createLogger( 'd:\\log.log');
+    window.logger = require('./logger').createLogger( __dirname + "/../../log.log");
 }else{
     // node 获取temp目录
     const os = require('os');
