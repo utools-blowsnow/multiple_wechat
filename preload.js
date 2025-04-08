@@ -1,7 +1,8 @@
 require( './lib/utoolsHelp');
 
-let {wechatHelp, GoConfigError} = require( './lib/wechatHelp');
+let {wechatHelp} = require( './lib/wechatHelp');
 const {downloadHandle, HANDLE_EXE_PATH} = require("./lib/kill");
+const {GoConfigError} = require("./lib/error");
 
 async function buildWechatList() {
     // 获取记录的微信列表
