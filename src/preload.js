@@ -3,6 +3,23 @@ require( './lib/utoolsHelp');
 let {wechatHelp} = require( './lib/wechatHelp');
 const {downloadHandle, HANDLE_EXE_PATH} = require("./lib/kill");
 const {GoConfigError} = require("./lib/error");
+const fs = require("node:fs");
+
+function fileToBase64(filePath) {
+    return new Promise((resolve, reject) => {
+        if (!fs.existsSync(filePath)){
+            resolve('');
+            return
+        }
+        fs.readFile(filePath, (err, data) => {
+            if (err) {
+                return reject(err);
+            }
+            const base64 = data.toString('base64');
+            resolve('data:image/png;base64,' + base64);
+        });
+    });
+}
 
 async function buildWechatList() {
     // 获取记录的微信列表
@@ -12,7 +29,7 @@ async function buildWechatList() {
         list.push({
             title: data.name  + (data.isLogin ? ' - [在线]': ''),
             description: data.id,
-            icon: data.logo,
+            icon: await fileToBase64(data.logo) || './logo.png',
             id: data.id,
             path: data.path
         })

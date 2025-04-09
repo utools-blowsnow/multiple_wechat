@@ -14,7 +14,8 @@ function closeHandle(pid, handleId) {
     })
 }
 
-const basePath = path.join(os.tmpdir(), "multiple_wechat");
+
+const basePath = path.join(os.homedir(), "multiple_wechat");
 if (!fs.existsSync(basePath)){
     fs.mkdirSync(basePath, {recursive: true});
 }
@@ -23,7 +24,6 @@ const HANDLE_EXE_PATH = path.join(basePath, 'handle.exe');
 const HANDLE_ZIP_PATH = path.join(basePath, 'Handle.zip');
 const HANDLE_ZIP_URL = 'https://download.sysinternals.com/files/Handle.zip';
 const WECHAT_MUTEX_NAME = "XWeChat_App_Instance_Identity_Mutex_Name";
-
 // 2. 自动下载 handle.exe（如果不存在）
 function downloadHandle() {
     return new Promise((resolve, reject) => {
@@ -89,9 +89,43 @@ function releaseMutex() {
     });
 }
 
+/**
+ * 关闭其他程序对文件的锁
+ * @param {string} filePath - 文件路径
+ */
+function releaseFileLock(filePath) {
+    return new Promise((resolve, reject) => {
+        // 使用 handle.exe 查找占用文件的进程和句柄
+        exec(`${HANDLE_EXE_PATH} -p weixin "${filePath}"`, (err, stdout, stderr) => {
+            if (err) {
+                return reject(`Error finding file lock: ${stderr || err.message}`);
+            }
+
+            // 解析 handle.exe 的输出，找到占用文件的 PID 和句柄 ID
+            const matches = stdout.match(/pid: (\d+)\s+type: (.*?)\s+([a-zA-Z0-9]+):/ig);
+            if (!matches) {
+                return reject('No process or handle found locking the file.');
+            }
+            for (const content of matches) {
+                const match = content.match(/pid: (\d+)\s+type: (.*?)\s+([a-zA-Z0-9]+):/i);
+                const [, pid, type, handleId] = match;
+                console.log(`File is locked by process with PID: ${pid}, Handle ID: ${handleId}`);
+                // 使用 handle.exe 关闭特定的句柄
+                exec(`${HANDLE_EXE_PATH} -c ${handleId} -p ${pid} -y`, (closeErr, closeStdout, closeStderr) => {
+                    if (closeErr) {
+                        return reject(`Error releasing file lock: ${closeStderr || closeErr.message}`);
+                    }
+                    console.log(`Handle ${handleId} for PID ${pid} released successfully.`);
+                    resolve();
+                });
+            }
+        });
+    });
+}
 
 module.exports = {
     releaseMutex,
     downloadHandle,
+    releaseFileLock,
     HANDLE_EXE_PATH
 }

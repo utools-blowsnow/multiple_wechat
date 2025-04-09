@@ -4,7 +4,7 @@ const pr = require("child_process");
 const iconv = require("iconv-lite");
 const path = require("node:path");
 const {findLatestFile, findLatestFileAll, findDirName} = require("./file");
-const {releaseMutex, downloadHandle} = require("./kill");
+const {releaseMutex, downloadHandle, releaseFileLock} = require("./kill");
 const {GoConfigError} = require("./error");
 
 
@@ -178,6 +178,9 @@ class WechatHelp {
     async startWx(itemData=null) {
         let wechatFilePath = await this.#getWechatDocumentPath();
 
+        // await releaseFileLock(wechatFilePath + "\\all_users\\config\\global_config")
+        // await releaseFileLock(wechatFilePath + "\\all_users\\config\\global_config.crc")
+
         // 重新登陆一个新的微信账号
         if (itemData){
             if (!fs.existsSync(itemData.path)){
@@ -215,7 +218,7 @@ class WechatHelp {
         if (!fs.existsSync(itemData.path)){
             throw new Error("微信账号信息不存在");
         }
-        fs.rmdirSync(itemData.path);
+        fs.rmdirSync(itemData.path, {recursive: true});
     }
 
     /**
