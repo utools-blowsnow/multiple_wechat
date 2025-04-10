@@ -197,7 +197,9 @@ class WechatHelp {
         logger.info("startWx")
 
         // 1. 杀掉互斥进程
-        await releaseMutex().catch(e => logger.error)
+        await releaseMutex().catch(e => {
+            logger.error("杀进程锁失败", e.message)
+        })
 
         // 2. 获取微信进程路径
         let binPath = await this.#getRegWechatExeFilePath();

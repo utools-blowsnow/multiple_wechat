@@ -26,5 +26,5 @@ if (utools.isDev()) {
     // node 获取temp目录
     const os = require('os');
     let tempDir = os.tmpdir();
-    window.logger = require('./logger').createLogger(tempDir + '\\log.log');
+    window.logger = require('./logger').createLogger(tempDir + '\\multiple_wechat.log');
 }
