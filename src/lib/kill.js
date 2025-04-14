@@ -29,6 +29,8 @@ function closeHandle(pid, handleId) {
         exec(command, (err, stdout) => {
             logger.info(`执行命令：${command}`);
 
+            logger.info(`执行完成`);
+
             clearTimeout(timer)
             resolve(stdout);
         });

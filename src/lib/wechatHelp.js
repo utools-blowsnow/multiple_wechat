@@ -198,7 +198,10 @@ class WechatHelp {
 
         // 1. 杀掉互斥进程
         await releaseMutex().catch(e => {
-            logger.error("杀进程锁失败", e.message)
+            logger.error("杀进程锁失败", {
+                message: e?.message,
+                stack: e?.stack
+            })
         })
 
         // 2. 获取微信进程路径
