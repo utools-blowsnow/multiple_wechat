@@ -22,13 +22,14 @@ function closeHandle(pid, handleId) {
         if (fs.existsSync("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe")){
             powershell = "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
         }
-        setTimeout(() => {
+        let timer = setTimeout(() => {
             resolve();
         }, 3000)
         let command = `${powershell} Start-Process "${HANDLE_EXE_PATH}" -ArgumentList @('-c','${handleId}','-p','${pid}','-y') -Verb RunAs -Wait`;
         exec(command, (err, stdout) => {
             logger.info(`执行命令：${command}`);
 
+            clearTimeout(timer)
             resolve(stdout);
         });
     })
