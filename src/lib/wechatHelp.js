@@ -203,12 +203,12 @@ class WechatHelp {
 
         // 2. 获取微信进程路径
         let binPath = await this.#getRegWechatExeFilePath();
+        binPath = binPath + "\\Weixin.exe"
         logger.info("binPath", binPath)
-        if (!binPath){
-            throw new Error("获取微信路径失败");
+        if (!binPath || !fs.existsSync(binPath)){
+            throw new Error("获取微信EXE路径失败");
         }
 
-        binPath = binPath + "\\Weixin.exe"
 
         // 3. 启动微信
         window.utools.shellOpenPath(binPath);

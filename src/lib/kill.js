@@ -18,9 +18,16 @@ const WECHAT_MUTEX_NAME = "XWeChat_App_Instance_Identity_Mutex_Name";
 
 function closeHandle(pid, handleId) {
     return new Promise((resolve, reject) => {
-        exec(`powershell Start-Process "${HANDLE_EXE_PATH}" -ArgumentList '-c', '${handleId}', '-p', '${pid}', '-y' -Verb RunAs -Wait`, (err, stdout) => {
-            logger.info(`执行命令：powershell Start-Process "${HANDLE_EXE_PATH}" -ArgumentList '-c', '${handleId}', '-p', '${pid}', '-y' -Verb RunAs -Wait`);
-            logger.info(`杀进程返回：PID=${pid}, 句柄=${handleId}, ${err.message} ${stdout}`);
+        let powershell = 'powershell'
+        if (fs.existsSync("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe")){
+            powershell = "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+        }
+        setTimeout(() => {
+            resolve();
+        }, 3000)
+        let command = `${powershell} Start-Process "${HANDLE_EXE_PATH}" -ArgumentList @('-c','${handleId}','-p','${pid}','-y') -Verb RunAs -Wait`;
+        exec(command, (err, stdout) => {
+            logger.info(`执行命令：${command}`);
 
             resolve(stdout);
         });
