@@ -140,11 +140,12 @@ class WechatHelp {
     async getLocalWechatAccountList() {
         let wechatFilePath = await this.#getWechatDocumentPath();
         let configDirPath = path.join(wechatFilePath, "all_users", "plugin_save_config");
+        let wxList = [];
+
         if (!fs.existsSync(configDirPath)){
-            throw new GoConfigError("未配置微信文档路径");
+            return wxList;
         }
         let paths = fs.readdirSync(configDirPath);
-        let wxList = [];
 
         logger.info("扫到本地记录的文件列表", paths)
 
