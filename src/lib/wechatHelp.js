@@ -171,6 +171,19 @@ class WechatHelp {
         return wxList;
     }
 
+    async execShell(cmd){
+        return new Promise((resolve, reject) => {
+            pr.exec(cmd, { encoding: 'utf8' }, (error, stdout, stderr) => {
+                if (error) {
+                    logger.error("执行命令失败", { cmd, error });
+                    reject(error);
+                } else {
+                    resolve(stdout.trim());
+                }
+            });
+        });
+    }
+
     /**
      * 启动微信
      * @returns {Promise<void>}
@@ -187,6 +200,12 @@ class WechatHelp {
             if (!fs.existsSync(itemData.path)){
                 throw new Error("微信账号信息不存在");
             }
+
+            await this.execShell('del "' + wechatFilePath + '\\all_users\\config\\global_config" /f /q');
+            await this.execShell('del "' + wechatFilePath + '\\all_users\\config\\global_config.crc" /f /q');
+            // fs.renameSync(wechatFilePath + "\\all_users\\config\\global_config", wechatFilePath + "\\all_users\\config\\global_config.1")
+            // fs.renameSync(wechatFilePath + "\\all_users\\config\\global_config.crc", wechatFilePath + "\\all_users\\config\\global_config.crc.1")
+
             // 复制保存的微信账号登陆信息  覆盖文件
             fs.copyFileSync(itemData.path + "\\global_config", wechatFilePath + "\\all_users\\config\\global_config");
             fs.copyFileSync(itemData.path + "\\global_config.crc", wechatFilePath + "\\all_users\\config\\global_config.crc");
